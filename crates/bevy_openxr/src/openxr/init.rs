@@ -25,6 +25,7 @@ use bevy_xr::session::EndXrSession;
 use bevy_xr::session::XrSharedStatus;
 use bevy_xr::session::XrStatus;
 use bevy_xr::session::XrStatusChanged;
+use openxr::raw::SpatialEntityFB;
 
 use crate::error::OxrError;
 use crate::graphics::*;
@@ -290,6 +291,18 @@ impl OxrInitPlugin {
             resolutions: self.resolutions.clone(),
             graphics_info,
         };
+
+        // if self.exts.fb_scene {
+        //     unsafe {
+        //         let spatial_entity = SpatialEntityFB::load(&entry, instance.as_raw());
+        //
+        //         if spatial_entity.is_ok() {
+        //             info!("Spatial Entity has been loaded in");
+        //         } else {
+        //             error!("Spatial Entity has not been loaded in");
+        //         }
+        //     }
+        // }
 
         Ok((
             instance,

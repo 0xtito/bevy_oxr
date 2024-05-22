@@ -26,6 +26,24 @@ impl OxrExtensions {
         self.0.ext_hand_tracking = false;
         self
     }
+    pub fn enable_scene(&mut self) -> &mut Self {
+        self.0.fb_scene = true;
+        self.0.fb_scene_capture = true;
+        self.0.fb_spatial_entity = true;
+        self.0.fb_spatial_entity_query = true;
+        self.0.fb_spatial_entity_storage = true;
+        self.0.fb_spatial_entity_container = true;
+        self
+    }
+    pub fn disable_scene(&mut self) -> &mut Self {
+        self.0.fb_scene = false;
+        self.0.fb_scene_capture = false;
+        self.0.fb_spatial_entity = false;
+        self.0.fb_spatial_entity_query = false;
+        self.0.fb_spatial_entity_storage = false;
+        self.0.fb_spatial_entity_container = false;
+        self
+    }
     /// returns true if all of the extensions enabled are also available in `available_exts`
     pub fn is_available(&self, available_exts: &OxrExtensions) -> bool {
         self.clone() & available_exts.clone() == *self

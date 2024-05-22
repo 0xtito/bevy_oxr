@@ -8,6 +8,7 @@ use openxr::AnyGraphics;
 use crate::error::OxrError;
 use crate::graphics::*;
 use crate::layer_builder::{CompositionLayer, LayerProvider};
+use crate::reference_space::OxrReferenceSpace;
 use crate::types::*;
 
 /// Wrapper around an [`Entry`](openxr::Entry) with some methods overridden to use bevy types.
@@ -39,6 +40,11 @@ impl OxrEntry {
         }
 
         let required_exts = exts | backend.required_exts();
+
+        // bevy::log::info!(
+        //     "Creating OpenXR instance with extensions: {:#?}",
+        //     required_exts
+        // );
 
         let instance = self.0.create_instance(
             &openxr::ApplicationInfo {
@@ -464,3 +470,53 @@ pub struct OxrRootTransform(pub GlobalTransform);
 #[derive(ExtractResource, Resource, Clone, Copy, Default, Deref, DerefMut, PartialEq)]
 /// This is inserted into the world to signify if the session should be cleaned up.
 pub struct OxrCleanupSession(pub bool);
+
+/// This struct represents an OpenXR scene and includes various components needed to create and manage the scene.
+///
+/// The struct `OxrScene` is derived from `Resource`, `Deref`, and `DerefMut`, allowing for convenient access to the underlying `openxr::raw::SceneFB`.
+///
+/// # Fields
+/// - `openxr::raw::SceneFB`: The main scene object.
+/// - `openxr::raw::SpatialEntityFB`: Represents a spatial entity in the scene.
+/// - `openxr::raw::SpatialEntityQueryFB`: Represents a query for spatial entities in the scene.
+/// - `openxr::raw::SpatialEntityStorageFB`: Represents storage for spatial entities in the scene.
+/// - `openxr::raw::SpatialEntityContainerFB`: Represents a container for spatial entities in the scene.
+///
+/// The reason for including each of these components as fields in the `OxrScene` struct is to avoid the need to pass them in again when creating a new scene.
+#[derive(Resource, Deref, DerefMut)]
+pub struct OxrScene(
+    #[deref] pub openxr::raw::SceneFB,
+    /// The reason to include eacch of the following is to avoid having to pass them in again when creating a new scene.
+    /// [`SpatualEntityFB`](openxr::raw::SpatialEntityFB)
+    openxr::raw::SpatialEntityFB,
+    /// [`SpatialEntityQueryFB`](openxr::raw::SpatialEntityQueryFB)
+    openxr::raw::SpatialEntityQueryFB,
+    /// [`SpatialEntityStorageFB`](openxr::raw::SpatialEntityStorageFB)
+    openxr::raw::SpatialEntityStorageFB,
+    /// [`SpatialEntityContainerFB`](openxr::raw::SpatialEntityContainerFB)
+    openxr::raw::SpatialEntityContainerFB,
+    /// [`SceneFB`](openxr::raw::SceneFB)
+    openxr::raw::SceneFB,
+);
+//
+impl OxrScene {
+    /// Creates a new [`OxrScene`] from an [`openxr::raw::SceneFB`].
+    /// In the majority of cases, you should use [`initialize_scene`](OxrSession::initialize_scene) instead.
+    pub fn from_inner(
+        scene: openxr::raw::SceneFB,
+        spatial_entity: openxr::raw::SpatialEntityFB,
+        spatial_entity_query: openxr::raw::SpatialEntityQueryFB,
+        spatial_entity_storage: openxr::raw::SpatialEntityStorageFB,
+        spatial_entity_container: openxr::raw::SpatialEntityContainerFB,
+        scene_fb: openxr::raw::SceneFB,
+    ) -> Self {
+        Self(
+            scene,
+            spatial_entity,
+            spatial_entity_query,
+            spatial_entity_storage,
+            spatial_entity_container,
+            scene_fb,
+        )
+    }
+}

@@ -12,7 +12,9 @@ use render::OxrRenderPlugin;
 
 use self::{
     exts::OxrExtensions,
-    features::{handtracking::HandTrackingPlugin, passthrough::OxrPassthroughPlugin},
+    features::{
+        handtracking::HandTrackingPlugin, passthrough::OxrPassthroughPlugin, scene::OxrScenePlugin,
+    },
     reference_space::OxrReferenceSpacePlugin,
 };
 
@@ -41,6 +43,7 @@ pub fn add_xr_plugins<G: PluginGroup>(plugins: G) -> PluginGroupBuilder {
         .add(OxrRenderPlugin)
         .add(OxrPassthroughPlugin)
         .add(HandTrackingPlugin::default())
+        .add(OxrScenePlugin)
         .add(XrCameraPlugin)
         .add(action_set_attaching::OxrActionAttachingPlugin)
         .add(action_binding::OxrActionBindingPlugin)

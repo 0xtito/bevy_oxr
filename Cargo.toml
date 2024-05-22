@@ -12,7 +12,7 @@ bevy_xr.path = "./crates/bevy_xr"
 bevy = "0.13.0"
 
 [workspace]
-members = ["crates/*", "crates/bevy_openxr/examples/android"]
+members = ["crates/*", "crates/bevy_openxr/examples/android", "crates/bevy_openxr/examples/android-scene"]
 
 [workspace.dependencies]
 bevy = "0.13.0"
